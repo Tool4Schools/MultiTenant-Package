@@ -1,0 +1,35 @@
+{
+  "name": "tools4schools/multitenant",
+  "description": "The Tools4schools MultiTenant package.",
+
+  "homepage": "https://tools4schools.org",
+  "support": {
+    "issues": "https://github.com/taftse/tools4schools/issues",
+    "source": "https://github.com/taftse/tools4schools"
+  },
+  "authors": [
+    {
+      "name": "Timothy Seebus",
+      "email": "timothyseebus@tools4schools.org"
+    }
+  ],
+  "require": {
+    "php": "^7.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Tools4Schools\\MultiTenant\\": ""
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Tools4Schools\\MultiTenant\\Providers\\MultiTenantServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev"
+}
