@@ -14,7 +14,8 @@
     }
   ],
   "require": {
-    "php": "^7.3"
+    "php": "^7.3",
+    "tools4schools/socialite": "dev-master"
   },
   "autoload": {
     "psr-4": {
@@ -31,5 +32,11 @@
   "config": {
     "sort-packages": true
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url":  "git@github.com:taftse/T4S-Socialite.git"
+    }
+  ]
 }
