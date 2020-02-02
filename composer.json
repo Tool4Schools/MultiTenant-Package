@@ -19,7 +19,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Tools4Schools\\MultiTenant\\": ""
+      "Tools4Schools\\MultiTenant\\": "src/"
     }
   },
   "extra": {
