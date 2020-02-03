@@ -9,11 +9,25 @@ use Tools4Schools\MultiTenant\Models\Tenant;
 class TenantManager
 {
     /**
+     * The application instance.
+     *
+     * @var \Illuminate\Contracts\Foundation\Application
+     */
+    protected $app;
+
+    /**
      * The array of created drivers
      *
      * @var array
      */
     protected $drivers = [];
+
+    public function __construct($app)
+    {
+        $this->app = $app;
+    }
+
+
 
     /**
      * @return Tenant
