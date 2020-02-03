@@ -19,11 +19,13 @@ class TenantController extends LoginController
 
     public function index(Request $request)
     {
-        $tenants = $request->session()->get('tmp_user',function(){
+        $user = $request->session()->get('tmp_user',function(){
             // get tenants with access token
+            return 'bla';
         });
 
-        return view('tenant.selection',$tenants);
+        dump($user);
+        return view('tenant::selection',$user);
     }
 
     public function select(Request $request)
