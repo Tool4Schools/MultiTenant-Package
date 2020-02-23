@@ -3,20 +3,18 @@
 namespace Tools4Schools\MultiTenant\Providers;
 
 
-use Illuminate\Http\Request;
+
 use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Blade;
+
 use Illuminate\Support\ServiceProvider;
-use Tools4Schools\MultiTenant\Contracts\Manager;
+
 use Tools4Schools\MultiTenant\Http\Middleware\IdentifyTenant;
 use Tools4Schools\MultiTenant\Http\Middleware\IdentifyTenantUsingDomain;
-use Tools4Schools\MultiTenant\Http\Middleware\IdentifyTenantUsingSession;
-use Tools4Schools\MultiTenant\Http\Middleware\IdentifyTenantUsingToken;
-use Tools4Schools\MultiTenant\Middleware\LoadTenantUsingSession;
+//use Tools4Schools\MultiTenant\Http\Middleware\IdentifyTenantUsingSession;
+//use Tools4Schools\MultiTenant\Http\Middleware\IdentifyTenantUsingToken;
+use Tools4Schools\MultiTenant\Contracts\TenantManager as TenantManagerContract;
 use Tools4Schools\MultiTenant\TenantManager;
-use Tools4Schools\MultiTenant\Contracts\TenantProvider as TenantRepositoryContract;
-use Tools4Schools\MultiTenant\Repositories\Api\TenantProvider;
-use Illuminate\Contracts\Http\Kernel as HttpKernel;
+
 
 class MultiTenantServiceProvider extends ServiceProvider
 {
@@ -38,6 +36,10 @@ class MultiTenantServiceProvider extends ServiceProvider
         /*if($this->app->runningInConsole()) {
         }
 */
+        $this->publishes([
+            __DIR__.'/../../config/multitenant.php' => config_path('multitenant.php'),
+        ]);
+
         $this->loadViewsFrom(__DIR__.'/../../resources/views','tenant');
 
         $this->app->make(Router::class)->aliasMiddleware('tenant.identify',IdentifyTenant::class);
@@ -51,8 +53,11 @@ class MultiTenantServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
+        if (! $this->app->configurationIsCached()) {
+            $this->mergeConfigFrom(__DIR__.'/../../config/multitenant.php', 'multitenant');
+        }
         $this->registerManager();
+        $this->registerDrivers();
         //$this->app->alias(TenantManager::class,'multitenant');
 
         //$this->registerCommands();
@@ -62,15 +67,45 @@ class MultiTenantServiceProvider extends ServiceProvider
     protected function registerManager()
     {
 
-        $this->app->singleton('tenantmanager', function ($app){
+        $this->app->singleton(TenantManagerContract::class, function ($app){
             return new TenantManager($app);
         });
 
         //$this->app->alias(TenantManager::class,Manager::class);
     }
 
+    protected function registerDrivers()
+    {
+        $this->registerDomainDriver();
+        $this->registerSessionDriver();
+        $this->registerTokenDriver();
+    }
 
+    protected function registerDomainDriver()
+    {
+        MultiTenant::resolved(function ($multitenant){
+            $multitenant->registerDriver('domain',function ($app,$name, array $config){
 
+            });
+        });
+    }
+
+    protected function registerSessionDriver()
+    {
+        MultiTenant::resolved(function ($multitenant){
+            $multitenant->registerDriver('session',function ($app,$name, array $config){
+
+            });
+        });
+    }
+    protected function registerTokenDriver()
+    {
+        MultiTenant::resolved(function ($multitenant){
+            $multitenant->registerDriver('token',function ($app,$name, array $config){
+
+            });
+        });
+    }
 
 
 /*
