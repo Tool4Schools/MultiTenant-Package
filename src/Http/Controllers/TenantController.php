@@ -6,9 +6,9 @@ namespace Tools4Schools\MultiTenant\Http\Controllers;
 use  Tools4Schools\MultiTenant\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Tools4Schools\MultiTenant\TenantManager;
+use Tools4Schools\MultiTenant\Contracts\TenantManager;
 
-class TenantController extends LoginController
+class TenantController extends Controller
 {
     protected $manager;
 
@@ -19,13 +19,15 @@ class TenantController extends LoginController
 
     public function index(Request $request)
     {
-        $user = $request->session()->get('tmp_user',function(){
+       /* $user = $request->session()->get('tmp_user',function(){
             // get tenants with access token
             return 'bla';
         });
 
         dump($user);
-        return view('tenant::selection',$user);
+       // return view('tenant::selection',$user);*/
+
+       dd($this->manager->driver());
     }
 
     public function select(Request $request)

@@ -19,7 +19,12 @@ class IdentifyTenant
 
     public function handle($request, Closure $next, ...$drivers)
     {
-        $this->resolveTenant($request,$drivers);
+        try{
+            $this->resolveTenant($request,$drivers);
+        }catch (IdentificationException $e)
+        {
+            return redirect()->route('tenant.selection');
+        }
 
         return $next($request);
     }
@@ -33,7 +38,7 @@ class IdentifyTenant
 
         foreach ($drivers as $driver)
         {
-            dd($this->manager->driver($driver));
+
             if($this->manager->driver($driver)->check())
             {
                 return $this->manager->shouldUse($driver);

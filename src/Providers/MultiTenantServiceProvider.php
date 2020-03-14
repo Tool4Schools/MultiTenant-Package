@@ -8,12 +8,16 @@ use Illuminate\Routing\Router;
 
 use Illuminate\Support\ServiceProvider;
 
+use Tools4Schools\MultiTenant\Drivers\DomainDriver;
+use Tools4Schools\MultiTenant\Drivers\SessionDriver;
+use Tools4Schools\MultiTenant\Drivers\TokenDriver;
 use Tools4Schools\MultiTenant\Http\Middleware\IdentifyTenant;
 use Tools4Schools\MultiTenant\Http\Middleware\IdentifyTenantUsingDomain;
 //use Tools4Schools\MultiTenant\Http\Middleware\IdentifyTenantUsingSession;
 //use Tools4Schools\MultiTenant\Http\Middleware\IdentifyTenantUsingToken;
 use Tools4Schools\MultiTenant\Contracts\TenantManager as TenantManagerContract;
 use Tools4Schools\MultiTenant\TenantManager;
+use Tools4Schools\MultiTenant\Facades\TenantManager as TenantManagerFacade;
 
 
 class MultiTenantServiceProvider extends ServiceProvider
@@ -83,26 +87,26 @@ class MultiTenantServiceProvider extends ServiceProvider
 
     protected function registerDomainDriver()
     {
-        MultiTenant::resolved(function ($multitenant){
+        TenantManagerFacade::resolved(function ($multitenant){
             $multitenant->registerDriver('domain',function ($app,$name, array $config){
-
+                return new DomainDriver();
             });
         });
     }
 
     protected function registerSessionDriver()
     {
-        MultiTenant::resolved(function ($multitenant){
+        TenantManagerFacade::resolved(function ($multitenant){
             $multitenant->registerDriver('session',function ($app,$name, array $config){
-
+                return new SessionDriver($name,$this->app['session.store']);
             });
         });
     }
     protected function registerTokenDriver()
     {
-        MultiTenant::resolved(function ($multitenant){
+        TenantManagerFacade::resolved(function ($multitenant){
             $multitenant->registerDriver('token',function ($app,$name, array $config){
-
+                return new TokenDriver();
             });
         });
     }

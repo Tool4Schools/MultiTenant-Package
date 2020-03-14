@@ -3,6 +3,7 @@
 
 namespace Tools4Schools\MultiTenant\Drivers;
 
+use Illuminate\Session\Store as Session;
 
 class SessionDriver extends TenantDriver
 {
@@ -64,18 +65,29 @@ class SessionDriver extends TenantDriver
         // If the tenant is null, but we decrypt a "recaller" cookie we can attempt to
         // pull the tenant data on that cookie which serves as a remember cookie on
         // the application. Once we have a user we can return it to the caller.
-        if (is_null($this->tenant) && ! is_null($recaller = $this->recaller())) {
+        /*if (is_null($this->tenant) && ! is_null($recaller = $this->recaller())) {
             $this->tenant = $this->tenantFromRecaller($recaller);
 
             if ($this->tenant) {
-                $this->updateSession($this->tenant->getTeanatIdentifier());
+                $this->updateSession($this->tenant->getTenantIdentifier());
 
                 $this->fireTenantSwitchedEvent($this->tenant);
             }
-        }
+        }*/
 
-        return $this->user;
+        return $this->tenant;
     }
 
+    public function getName()
+    {
+        return 'tenant_'.$this->name.'_'.sha1(static::class);
+    }
 
+    protected function recaller()
+    {
+        if(is_number($this->request))
+        {
+            return;
+        }
+    }
 }
