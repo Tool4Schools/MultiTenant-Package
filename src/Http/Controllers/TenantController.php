@@ -3,14 +3,27 @@
 
 namespace Tools4Schools\MultiTenant\Http\Controllers;
 
+use Illuminate\Foundation\Auth\RedirectsUsers;
 use  Tools4Schools\MultiTenant\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Tools4Schools\MultiTenant\Contracts\TenantManager;
+use Tools4Schools\MultiTenant\Models\Tenant;
+use Tools4Schools\Users\Models\User;
+use App\Providers\RouteServiceProvider;
 
 class TenantController extends Controller
 {
+    use RedirectsUsers;
+
     protected $manager;
+
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
+    protected $redirectTo = RouteServiceProvider::HOME;
 
     public function __construct(TenantManager $manager)
     {
@@ -19,22 +32,24 @@ class TenantController extends Controller
 
     public function index(Request $request)
     {
-       /* $user = $request->session()->get('tmp_user',function(){
-            // get tenants with access token
-            return 'bla';
-        });
+        $tenants  = auth()->user()->tenants;
 
-        dump($user);
-       // return view('tenant::selection',$user);*/
+        if($tenants->count() == 1){
 
-       dd($this->manager->driver());
+            $this->manager->switchTenant($tenants[0]);
+
+            return redirect()->intended('/home');
+        }
+
+        return view('tenant::selection',['tenants'=>$tenants]);
+
     }
 
     public function select(Request $request)
     {
-        $this->manager->switchTenant($request->tenantUUID);
+        $tenant = Tenant::where('uuid',$request->input('tenant'))->firstOrFail();
+        $this->manager->switchTenant($tenant);
 
-        // complete login
-        return redirect()->intended('dashboard');
+        return redirect()->intended($this->redirectPath());
     }
 }

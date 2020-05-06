@@ -14,12 +14,28 @@ return [
     'drivers' =>[
         'web'=>[
             'driver' => 'session',
-            'provider' => 'api-tenants',
+            'provider' => 'db-tenants',
+            //'provider' => 'api-tenants',
         ],
 
         'api' => [
             'driver' => 'token',
-            'provider' => 'db-tenants',
+            'provider' => 'tenants',
         ],
+
+        'authcode' =>[
+            'driver' =>'authcode',
+            'provider' => 'db-tenants',
+        ]
     ],
+
+    'providers' =>[
+        'db-tenants' =>[
+            'driver' =>'eloquent',
+            'model' => \Tools4Schools\MultiTenant\Models\Tenant::class
+        ],
+        'api-tenants' =>[
+            'driver' =>'api',
+        ]
+    ]
 ];

@@ -3,8 +3,9 @@
 
 namespace Tools4Schools\MultiTenant\Drivers;
 
+use Tools4Schools\MultiTenant\Contracts\TenantDriver as TenantDriverContract;
 
-class TokenDriver extends TenantDriver
+class TokenDriver extends TenantDriver implements  TenantDriverContract
 {
 
     public function tenant()

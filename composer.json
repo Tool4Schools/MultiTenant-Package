@@ -14,8 +14,7 @@
     }
   ],
   "require": {
-    "php": "^7.3",
-    "tools4schools/socialite": "dev-master"
+    "php": "^7.3"
   },
   "autoload": {
     "psr-4": {
@@ -26,7 +25,10 @@
     "laravel": {
       "providers": [
         "Tools4Schools\\MultiTenant\\Providers\\MultiTenantServiceProvider"
-      ]
+      ],
+      "aliases": {
+        "TenantManager": "Tools4Schools\\MultiTenant\\Facades\\TenantManager"
+      }
     }
   },
   "config": {

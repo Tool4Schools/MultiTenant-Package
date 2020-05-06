@@ -21,9 +21,12 @@ class IdentifyTenant
     {
         try{
             $this->resolveTenant($request,$drivers);
-        }catch (IdentificationException $e)
+        }
+        catch (IdentificationException $e)
         {
-            return redirect()->route('tenant.selection');
+            return $request->expectsJson()
+                ? response()->json(['message' => $e->getMessage()], 401)
+                : redirect()->guest($e->redirectTo() ?? route('tenant.selection'));
         }
 
         return $next($request);
@@ -50,7 +53,7 @@ class IdentifyTenant
 
     protected function unidentified($request,array $drivers)
     {
-        throw new IdentificationException(' Tenant Unidentified.',$drivers,$this->redirectTo($request));
+        throw new IdentificationException('Tenant Unidentified.',$drivers,$this->redirectTo($request));
     }
 
     protected function redirectTo($request)

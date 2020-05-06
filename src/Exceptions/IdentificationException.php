@@ -18,14 +18,14 @@ class IdentificationException extends Exception
      * Create a new authentication exception.
      *
      * @param  string  $message
-     * @param  array  $guards
+     * @param  array  $driver
      * @return void
      */
-    public function __construct($message = 'Unauthenticated.', array $guards = [])
+    public function __construct($message = 'Unauthenticated.', array $driver = [])
     {
         parent::__construct($message);
 
-        $this->guards = $guards;
+        $this->guards = $driver;
     }
 
     /**
@@ -36,5 +36,10 @@ class IdentificationException extends Exception
     public function guards()
     {
         return $this->guards;
+    }
+
+    public function redirectTo()
+    {
+
     }
 }

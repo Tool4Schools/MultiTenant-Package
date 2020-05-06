@@ -25,7 +25,7 @@ interface Tenant
      *
      * @return string
      */
-    public function getRememberToken();
+    //public function getRememberToken();
 
     /**
      * Set the token value for the "remember tenant" session.
@@ -33,13 +33,13 @@ interface Tenant
      * @param  string  $value
      * @return void
      */
-    public function setRememberToken($value);
+    //public function setRememberToken($value);
 
     /**
      * Get the column name for the "remember tenant" token.
      *
      * @return string
      */
-    public function getRememberTokenName();
+    //public function getRememberTokenName();
 
 }

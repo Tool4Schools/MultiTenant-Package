@@ -4,67 +4,38 @@
 namespace Tools4Schools\MultiTenant\Traits;
 
 
+use Illuminate\Support\Str;
+use Tools4Schools\MultiTenant\Contracts\Tenant;
+use Tools4Schools\MultiTenant\Models\TenantConnection;
+
 trait IsTenant
 {
-    /**
-     * The column name of the "remember token" token.
-     *
-     * @var string
-     */
-    protected $rememberTokenName = 'remember_token';
-
-    /**
-     * Get the name of the unique identifier for the tenant.
-     *
-     * @return string
-     */
-    public function getTenantIdentifierName()
+    public static function boot()
     {
-        return $this->getKeyName();
+        parent::boot();
+
+        static::creating(function ($tenant){
+           $tenant->uuid = Str::uuid();
+        });
+
+        static::created(function ($tenant){
+            $tenant->tenantConnection()->save(static::newDatabaseConnection($tenant));
+        });
     }
 
-    /**
-     * Get the unique identifier for the tenant.
-     *
-     * @return mixed
-     */
-    public function getTenantIdentifier()
+    protected static function newDatabaseConnection(Tenant $tenant)
     {
-        return $this->{$this->getTenantIdentifierName()};
+        return new TenantConnection([
+            'database' => 't4s_'.$tenant->id,
+            'host' =>'',
+            'username' =>'',
+            'password' =>''
+        ]);
     }
 
-    /**
-     * Get the token value for the "remember me" session.
-     *
-     * @return string|null
-     */
-    public function getRememberToken()
+    public function tenantConnection()
     {
-        if (! empty($this->getRememberTokenName())) {
-            return (string) $this->{$this->getRememberTokenName()};
-        }
+        return $this->hasOne(TenantConnection::class,'tenant_id','id');
     }
 
-    /**
-     * Set the token value for the "remember me" session.
-     *
-     * @param  string  $value
-     * @return void
-     */
-    public function setRememberToken($value)
-    {
-        if (! empty($this->getRememberTokenName())) {
-            $this->{$this->getRememberTokenName()} = $value;
-        }
-    }
-
-    /**
-     * Get the column name for the "remember me" token.
-     *
-     * @return string
-     */
-    public function getRememberTokenName()
-    {
-        return $this->rememberTokenName;
-    }
 }

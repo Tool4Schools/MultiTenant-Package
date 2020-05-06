@@ -5,10 +5,13 @@ namespace Tools4Schools\MultiTenant;
 
 use InvalidArgumentException;
 use Tools4Schools\MultiTenant\Models\Tenant;
-use \Tools4Schools\MultiTenant\Contracts\TenantManager as TenantManagerContract;
+use Tools4Schools\MultiTenant\Contracts\TenantManager as TenantManagerContract;
+use Tools4Schools\MultiTenant\Traits\CreateTenantProvider;
+
 
 class TenantManager implements TenantManagerContract
 {
+    use CreateTenantProvider;
     /**
      * The application instance.
      *
@@ -35,27 +38,29 @@ class TenantManager implements TenantManagerContract
     }
 
 
-
-    /**
-     * @return Tenant
-     */
-    public function tenant():Tenant
-    {
-
-    }
-
     public function driver($name = null)
     {
         $name = $name?: $this->getDefaultDriver();
 
-        return isset($this->drivers[$name])
-            ? $this->drivers[$name]
-            : $this->drivers[$name] = $this->resolve($name);
+        return $this->drivers[$name] ?? $this->drivers[$name] = $this->resolve($name);
+    }
+
+    public function provider()
+    {
+
     }
 
     public function shouldUse($name): void
     {
-        // TODO: Implement shouldUse() method.
+        $name = $name?: $this->getDefaultDriver();
+
+        $this->setDefaultDriver($name);
+
+        $this->tenantResolver = function ($name = null){
+
+            return $this->driver($name)->tenant();
+        };
+
     }
 
     protected function resolve($name)
@@ -66,19 +71,21 @@ class TenantManager implements TenantManagerContract
             throw new InvalidArgumentException("Tenant Driver [{$name}] is not defined.");
         }
 
-        if (isset($this->customCreators[$config['driver']])) {
-            return $this->callCustomCreator($name, $config);
+        if (isset($this->customDriverCreators[$config['driver']])) {
+            return $this->callCustomDriverCreator($name, $config);
         }
 
-        //throw new InvalidArgumentException("Tenant Driver driver [{$name}] is not defined.");
+        throw new InvalidArgumentException("Tenant Driver driver [{$name}] is not defined.");
     }
 
     public function registerDriver($driver,\Closure $callback)
     {
-        $this->customCreators[$driver] = $callback;
+        $this->customDriverCreators[$driver] = $callback;
 
         return $this;
     }
+
+
 
     /**
      * Call a custom driver creator.
@@ -87,11 +94,14 @@ class TenantManager implements TenantManagerContract
      * @param  array  $config
      * @return mixed
      */
-    protected function callCustomCreator($name, array $config)
+    protected function callCustomDriverCreator($name, array $config)
     {
-        return $this->customCreators[$config['driver']]($this->app, $name, $config);
-    }
 
+        $provider = $this->createTenantProvider($config['provider']);
+
+
+        return $this->customDriverCreators[$config['driver']]($this->app, $name, $provider, $config);
+    }
 
 
     protected function getConfig($name)

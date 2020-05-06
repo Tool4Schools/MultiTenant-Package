@@ -4,7 +4,9 @@
 namespace Tools4Schools\MultiTenant\Drivers\Providers;
 
 
-class APIProvider  implements DataProvider
+use Tools4Schools\MultiTenant\Contracts\TenantProvider;
+
+class APIProvider  implements TenantProvider
 {
 
 }

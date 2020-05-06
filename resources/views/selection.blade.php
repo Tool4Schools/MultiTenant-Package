@@ -1,21 +1,25 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Select School</div>
+<div class="flex flex-col break-words bg-white border border-2 rounded shadow-md w-1/2 mx-auto">
 
-                    <div class="panel-body">
-                        @foreach($tenants as $tenant)
-                            <p>
-                                <a class="btn btn-link" href="{{ url('login/tenant/'.$tenant['id']) }}">{{$tenant['name']}}</a>
-                            </p>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="font-semibold bg-gray-200 text-gray-700 py-3 px-6 mb-0">
+        Select School
     </div>
+
+    <div class="w-full p-6">
+        <p class="text-gray-700">
+            <form class="form-horizontal " method="POST" action="{{ route('tenant.select') }}">
+                @csrf
+                @foreach($tenants as $tenant)
+                    <p>
+                        <button type="submit" name="tenant" value="{{$tenant['uuid']}}">
+                            {{$tenant['name']}}
+                        </button>
+                    </p>
+                @endforeach
+            </form>
+        </p>
+    </div>
+</div>
 @endsection
