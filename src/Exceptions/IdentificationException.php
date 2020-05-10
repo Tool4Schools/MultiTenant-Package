@@ -8,24 +8,33 @@ use Exception;
 class IdentificationException extends Exception
 {
     /**
-     * All of the guards that were checked.
+     * All of the drivers that were checked.
      *
      * @var array
      */
-    protected $guards;
+    protected $drivers;
+
+    /**
+     * The path the user should be redirected to.
+     *
+     * @var string
+     */
+    protected $redirectTo;
 
     /**
      * Create a new authentication exception.
      *
      * @param  string  $message
      * @param  array  $driver
+     * @param  string|null  $redirectTo
      * @return void
      */
-    public function __construct($message = 'Unauthenticated.', array $driver = [])
+    public function __construct($message = 'Tenant Not Identified.', array $driver = [], $redirectTo = null)
     {
         parent::__construct($message);
 
-        $this->guards = $driver;
+        $this->drivers = $driver;
+        $this->redirectTo = $redirectTo;
     }
 
     /**
@@ -33,13 +42,18 @@ class IdentificationException extends Exception
      *
      * @return array
      */
-    public function guards()
+    public function drivers()
     {
-        return $this->guards;
+        return $this->drivers;
     }
 
+    /**
+     * Get the path the user should be redirected to.
+     *
+     * @return string
+     */
     public function redirectTo()
     {
-
+        return $this->redirectTo;
     }
 }
