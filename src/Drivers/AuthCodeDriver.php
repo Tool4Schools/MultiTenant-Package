@@ -22,18 +22,12 @@ class AuthCodeDriver extends TenantDriver implements TenantDriverContract
     {
         parent::__construct($name, $provider, $request);
 
-        $this->setPrivateKey($this->makeCryptKey('private'));
+        $this->setEncryptionKey(app('encrypter')->getKey());
     }
 
 
     public function tenant(): ?Tenant
     {
-
-        // load encryption keys
-        https://github.com/laravel/passport/blob/b9764582d06dd2327eb4d1d267c4dfe7861ceb5a/src/PassportServiceProvider.php#L244
-
-
-
 
         // If we've already retrieved the tenant for the current request we can just
         // return it back immediately. We do not want to fetch the tenant data on
@@ -47,13 +41,12 @@ class AuthCodeDriver extends TenantDriver implements TenantDriverContract
         {
             $authCodePayload = \json_decode($this->decrypt($encryptedAuthCode));
 
-            dd($authCodePayload);
-            /*$code = AuthCode::where('id',$authCode)
+            //dump($authCodePayload);
+            $code = AuthCode::where('id',$authCodePayload->auth_code_id)
                 ->where('client_id',$this->request->input('client_id'))
                 ->with('tenant')
                 ->first();
-            dump($code);*/
-           // $this->switchTenant($code->tenant);
+            $this->switchTenant($code->tenant);
         }
         // check if the code has a tenant_id
         // if yes set to tenant
