@@ -37,7 +37,7 @@ class SessionDriver extends TenantDriver implements TenantDriverContract
         $this->session = $session;
     }
 
-    public function tenant():?Tenant
+    public function tenant(): ?Tenant
     {
         // If we've already retrieved the tenant for the current request we can just
         // return it back immediately. We do not want to fetch the tenant data on

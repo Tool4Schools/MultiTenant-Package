@@ -5,8 +5,9 @@ namespace Tools4Schools\MultiTenant\Drivers;
 
 
 use Symfony\Component\HttpFoundation\Request;
+use Tools4Schools\MultiTenant\Contracts\Tenant;
 use Tools4Schools\MultiTenant\Contracts\TenantProvider;
-use Tools4Schools\MultiTenant\Models\Tenant;
+//use Tools4Schools\MultiTenant\Models\Tenant;
 
 abstract class TenantDriver
 {

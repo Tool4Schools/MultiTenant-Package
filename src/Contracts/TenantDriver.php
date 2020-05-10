@@ -10,7 +10,7 @@ interface TenantDriver
      *
      * @return Tenant|null
      */
-    public function tenant():?Tenant;
+    public function tenant(): ?Tenant;
 
     /**
      * @param Tenant $tenant
