@@ -50,7 +50,7 @@ class MultiTenantServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../../resources/views','tenant');
 
         //$this->app->make(Router::class)->aliasMiddleware('tenant.identify',IdentifyTenant::class);
-        $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
+
     }
 
     /**

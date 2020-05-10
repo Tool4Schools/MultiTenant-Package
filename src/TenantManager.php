@@ -4,6 +4,7 @@
 namespace Tools4Schools\MultiTenant;
 
 use InvalidArgumentException;
+use Illuminate\Support\Facades\Route;
 use Tools4Schools\MultiTenant\Models\Tenant;
 use Tools4Schools\MultiTenant\Contracts\TenantManager as TenantManagerContract;
 use Tools4Schools\MultiTenant\Traits\CreateTenantProvider;
@@ -35,6 +36,31 @@ class TenantManager implements TenantManagerContract
     public function __construct($app)
     {
         $this->app = $app;
+    }
+
+
+    /**
+     * Binds the Passport routes into the controller.
+     *
+     * @param  callable|null  $callback
+     * @param  array  $options
+     * @return void
+     */
+    public static function routes($callback = null, array $options = [])
+    {
+        $callback = $callback ?: function ($router) {
+            $router->all();
+        };
+
+        $defaultOptions = [
+            //'namespace' => '\Tools4Schools\MultiTenant\Http\Controllers',
+        ];
+
+        $options = array_merge($defaultOptions, $options);
+
+        Route::group($options, function ($router) use ($callback) {
+            $callback(new RouteRegistrar($router));
+        });
     }
 
 
