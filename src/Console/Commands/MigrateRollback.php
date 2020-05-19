@@ -3,33 +3,34 @@
 
 namespace Tools4Schools\MultiTenant\Console\Commands;
 
-
-
+use Illuminate\Database\Console\Migrations\RollbackCommand;
 use Illuminate\Database\Migrations\Migrator;
 use Tools4Schools\MultiTenant\Database\DatabaseMigrator;
-use Illuminate\Database\Console\Migrations\MigrateCommand;
-use Tools4Schools\MultiTenant\Traits\Console\FetchesTenants;
 use Tools4Schools\MultiTenant\Traits\Console\AcceptsMultipleTenants;
+use Tools4Schools\MultiTenant\Traits\Console\FetchesTenants;
 
-class Migrate extends MigrateCommand
+class MigrateRollback extends RollbackCommand
 {
-    use FetchesTenants, AcceptsMultipleTenants;
+    use FetchesTenants,AcceptsMultipleTenants;
 
     protected $dbm;
 
     /**
-     * The name and signature of the console command.
+     * The console command description.
      *
      * @var string
      */
-    //protected $signature = 'tenants:migrate {tenant?}';
+    protected $description = 'Rollback migrations for tenants';
 
-    protected  $description = 'Run migrations for tenants';
-
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
     public function __construct(Migrator $migrator, DatabaseMigrator $dbm)
     {
         parent::__construct($migrator);
-        $this->setName('tenants:migrate');
+        $this->setName('tenants:rollback');
 
         $this->specifyParameters();
 
@@ -50,7 +51,7 @@ class Migrate extends MigrateCommand
         $this->input->setOption('database', 'tenant');
 
         $this->tenants($this->option('tenants'))->each(function ($tenant) {
-            $this->info('Migrating Tenant: '.$tenant->name);
+            $this->info('Rolling back Migrations for Tenant: '.$tenant->name);
             $this->dbm->createConnection($tenant);
             $this->dbm->connectToTenant();
 

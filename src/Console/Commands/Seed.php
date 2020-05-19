@@ -4,32 +4,34 @@
 namespace Tools4Schools\MultiTenant\Console\Commands;
 
 
-
-use Illuminate\Database\Migrations\Migrator;
-use Tools4Schools\MultiTenant\Database\DatabaseMigrator;
-use Illuminate\Database\Console\Migrations\MigrateCommand;
-use Tools4Schools\MultiTenant\Traits\Console\FetchesTenants;
+use Illuminate\Database\Console\Seeds\SeedCommand;
+use Illuminate\Database\ConnectionResolverInterface as Resolver;
+use Tools4Schools\MultiTenant\Database\DatabaseManager;
 use Tools4Schools\MultiTenant\Traits\Console\AcceptsMultipleTenants;
+use Tools4Schools\MultiTenant\Traits\Console\FetchesTenants;
 
-class Migrate extends MigrateCommand
+class Seed extends SeedCommand
 {
     use FetchesTenants, AcceptsMultipleTenants;
 
     protected $dbm;
 
     /**
-     * The name and signature of the console command.
+     * The console command description.
      *
      * @var string
      */
-    //protected $signature = 'tenants:migrate {tenant?}';
+    protected $description = 'Seeds tenant databases';
 
-    protected  $description = 'Run migrations for tenants';
-
-    public function __construct(Migrator $migrator, DatabaseMigrator $dbm)
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct(Resolver $resolver, DatabaseManager $dbm)
     {
-        parent::__construct($migrator);
-        $this->setName('tenants:migrate');
+        parent::__construct($resolver);
+        $this->setName('tenants:seed');
 
         $this->specifyParameters();
 
@@ -50,7 +52,7 @@ class Migrate extends MigrateCommand
         $this->input->setOption('database', 'tenant');
 
         $this->tenants($this->option('tenants'))->each(function ($tenant) {
-            $this->info('Migrating Tenant: '.$tenant->name);
+            $this->info('Seeding Tenant: '.$tenant->name);
             $this->dbm->createConnection($tenant);
             $this->dbm->connectToTenant();
 
@@ -58,10 +60,5 @@ class Migrate extends MigrateCommand
 
             $this->dbm->purge();
         });
-    }
-
-    protected function getMigrationPaths()
-    {
-        return [database_path('migrations/tenant')];
     }
 }
