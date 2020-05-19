@@ -9,18 +9,18 @@ return [
 
     'defaults' =>[
         'driver' =>'web',
+        'database' =>env('MASTER_DB',env('DB_CONNECTION')),
     ],
 
     'drivers' =>[
         'web'=>[
             'driver' => 'session',
             'provider' => 'db-tenants',
-            //'provider' => 'api-tenants',
         ],
 
         'api' => [
             'driver' => 'token',
-            'provider' => 'tenants',
+            'provider' => 'db-tenants',
         ],
 
         'authcode' =>[
