@@ -4,9 +4,12 @@
 namespace Tools4Schools\MultiTenant\Drivers;
 
 
+use Illuminate\Events\Dispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Tools4Schools\MultiTenant\Contracts\Tenant;
 use Tools4Schools\MultiTenant\Contracts\TenantProvider;
+use Tools4Schools\MultiTenant\Events\TenantSwitched;
+
 //use Tools4Schools\MultiTenant\Models\Tenant;
 
 abstract class TenantDriver
@@ -67,6 +70,17 @@ abstract class TenantDriver
         {
             $this->events->dispatch(new TenantSwitched($tenant));
         }
+    }
+
+    /**
+     * Set the event dispatcher instance.
+     *
+     * @param  \Illuminate\Contracts\Events\Dispatcher  $events
+     * @return void
+     */
+    public function setDispatcher(Dispatcher $events)
+    {
+        $this->events = $events;
     }
 
 }

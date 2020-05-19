@@ -101,7 +101,7 @@ class TenantManager implements TenantManagerContract
             return $this->callCustomDriverCreator($name, $config);
         }
 
-        throw new InvalidArgumentException("Tenant Driver driver [{$name}] is not defined.");
+        throw new InvalidArgumentException("Tenant Driver [{$name}] is not defined.");
     }
 
     public function registerDriver($driver,\Closure $callback)
@@ -111,6 +111,15 @@ class TenantManager implements TenantManagerContract
         return $this;
     }
 
+    /**
+     * Determines if any drivers have already been resolved.
+     *
+     * @return bool
+     */
+    public function hasResolvedDrivers()
+    {
+        return count($this->drivers) > 0;
+    }
 
 
     /**
@@ -125,8 +134,14 @@ class TenantManager implements TenantManagerContract
 
         $provider = $this->createTenantProvider($config['provider']);
 
+        $driver = $this->customDriverCreators[$config['driver']]($this->app, $name, $provider, $config);
 
-        return $this->customDriverCreators[$config['driver']]($this->app, $name, $provider, $config);
+        if (method_exists($driver, 'setDispatcher')) {
+            $driver->setDispatcher($this->app['events']);
+        }
+
+
+        return $driver;
     }
 
 
