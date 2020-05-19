@@ -20,6 +20,7 @@ class CreateTenantConnectionsTable extends Migration
             $table->string('host');
             $table->string('username');
             $table->string('password');
+            $table->integer('port')->default('3306');
             $table->timestamps();
 
             $table->foreign('tenant_id')->references('id')->on('tenants');
