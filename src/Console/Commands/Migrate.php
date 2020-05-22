@@ -62,6 +62,6 @@ class Migrate extends MigrateCommand
 
     protected function getMigrationPaths()
     {
-        return [database_path('migrations/tenant')];
+        return [database_path('migrations')];
     }
 }
