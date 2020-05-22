@@ -4,6 +4,7 @@
 namespace Tools4Schools\MultiTenant\Drivers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Request;
 use Tools4Schools\MultiTenant\Contracts\Tenant;
 use Tools4Schools\MultiTenant\Contracts\TenantDriver as TenantDriverContract;
@@ -29,7 +30,7 @@ class TokenDriver extends TenantDriver implements  TenantDriverContract
     public function switchTenant(Tenant $tenant)
     {
         $this->tenant = $tenant;
-
+        Log::debug('switched Tenant to '.$tenant->name);
         $this->fireTenantSwitchedEvent($tenant);
     }
 }
