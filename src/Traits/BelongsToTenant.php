@@ -10,6 +10,6 @@ trait BelongsToTenant
 {
     public function tenants()
     {
-        return $this->belongsToMany(Tenant::class);
+        return $this->belongsToMany(Tenant::class,'tenant_users');
     }
 }
